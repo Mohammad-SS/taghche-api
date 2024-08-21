@@ -3,7 +3,8 @@ version: '3.8'
 services:
   django:
     build: ./django
-    command: "gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
+#    command: "gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
+    command : "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./django:/app
     ports:
