@@ -14,9 +14,14 @@ class GetBookData(APIView):
     """
 
     # Responses for common scenarios
-    NOT_FOUND_RESPONSE = Response({"error": "No book found"}, headers={"data-origin": None},
-                                  status=status.HTTP_404_NOT_FOUND)
-    NOT_ALLOWED_RESPONSE = Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+    NOT_FOUND_RESPONSE = Response(
+        {"error": "No book found"},
+        headers={"data-origin": None},
+        status=status.HTTP_404_NOT_FOUND,
+    )
+    NOT_ALLOWED_RESPONSE = Response(
+        {"error": "Unauthorized"}, status=status.HTTP_401_UNAUTHORIZED
+    )
 
     def get(self, request, *args, **kwargs):
         """
@@ -68,10 +73,13 @@ class GetBookData(APIView):
         book = Book(book_id=book_id)
         cache_name = request.data.get("cache", None)
         if not cache_name:
-            return Response({'error': 'cache is a required field'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "cache is a required field"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         result = book.delete_in_cache(cache_name=cache_name)
-        return Response({'success': True, "message": result})
+        return Response({"success": True, "message": result})
 
     def put(self, request, *args, **kwargs):
         """
@@ -103,11 +111,14 @@ class GetBookData(APIView):
             return self.NOT_FOUND_RESPONSE
 
         if not data:
-            return Response({'error': 'data is a required field'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "data is a required field"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         book = Book(book_id=book_id)
         result = book.set_in_cache(cache_name=cache, value=data)
-        return Response(data={'success': True, "message": result})
+        return Response(data={"success": True, "message": result})
 
     def is_allowed(self, request):
         """
@@ -119,5 +130,5 @@ class GetBookData(APIView):
         Returns:
             bool: True if authorized, False otherwise.
         """
-        secret_key = request.headers.get('Authorization')
-        return secret_key == f'Bearer {settings.CELERY_SECRET_KEY}'
+        secret_key = request.headers.get("Authorization")
+        return secret_key == f"Bearer {settings.CELERY_SECRET_KEY}"
