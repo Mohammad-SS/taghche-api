@@ -3,12 +3,12 @@ version: '3.8'
 services:
   django:
     build: ./django
-#    command: "gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
-    command : "python manage.py runserver 0.0.0.0:8000"
+    command: "gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
+    restart: always
     volumes:
       - ./django:/app
     ports:
-      - "8000:8000"
+      - "5000:8000"
     env_file:
       - .env
     depends_on:
@@ -17,22 +17,35 @@ services:
 
   redis:
     image: "redis:alpine"
+    restart: always
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   rabbitmq:
     image: "rabbitmq:3.11-management-alpine"
     ports:
       - "5672:5672"    # RabbitMQ broker
       - "15672:15672"  # RabbitMQ management UI
+    restart: always
     environment:
       RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS}"
       RABBITMQ_DEFAULT_VHOST: "${RABBITMQ_DEFAULT_VHOST}"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   celery:
     build: ./django
     command: "celery -A config.celery worker --loglevel=info"
+    restart: always
     volumes:
       - ./django:/app
     env_file:
