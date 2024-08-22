@@ -6,7 +6,8 @@ from .classes import Book
 
 
 class GetBookData(APIView):
-    NOT_FOUND_RESPONSE = Response({"error": "No book found"}, status=status.HTTP_404_NOT_FOUND)
+    NOT_FOUND_RESPONSE = Response({"error": "No book found"}, headers={"data-origin": None},
+                                  status=status.HTTP_404_NOT_FOUND)
     NOT_ALLOWED_RESPONSE = Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
 
     def get(self, request, *args, **kwargs):
@@ -16,17 +17,11 @@ class GetBookData(APIView):
 
         book = Book(book_id=book_id)
 
-        data = book.get_cached_data()
-
-        if not data:
-            print("Didnt Find in caches ... getting from API")
-            data = book.fetch_book_data()
-
-        if not data:
-            print("didnt find from API")
+        data, place = book.get_data()
+        if data:
+            return Response(data=data, headers={"data-origin": place})
+        else:
             return self.NOT_FOUND_RESPONSE
-
-        return Response(data=data)
 
     def delete(self, request, *args, **kwargs):
         if not self.is_allowed(request):
