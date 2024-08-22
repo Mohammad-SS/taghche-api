@@ -32,8 +32,10 @@ class Book:
         return None
 
     def set_cached_data(self, value):
+        result = {}
         for cache_name in self.caches:
-            self.set_in_cache(cache_name, value)
+            result[cache_name] = self.set_in_cache(cache_name, value)
+        return result
 
     def get_from_cache(self, cache_name):
         cache = caches[cache_name]
@@ -47,7 +49,9 @@ class Book:
     def set_in_cache(self, cache_name, value):
         cache = caches[cache_name]
         cache.set(self.book_id, value)
-        print(f"Fetched data set in {cache_name} cache")
+        if cache.get(self.book_id):
+            return f"Data for {self.book_id} set in {cache_name} cache"
+        return f"Data for {self.book_id} not set in {cache_name} cache"
 
     def delete_in_cache(self, cache_name):
         cache = caches[cache_name]
