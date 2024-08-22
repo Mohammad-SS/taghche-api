@@ -27,17 +27,21 @@ def clear_book_cache(book_id, delete_from=None):
     result = {}
     endpoint = reverse("get-book", kwargs={"book_id": book_id})
     url = f"http://django:8000{endpoint}"
-    headers = {
-        "Authorization": f"Bearer {settings.CELERY_SECRET_KEY}"
-    }
+    headers = {"Authorization": f"Bearer {settings.CELERY_SECRET_KEY}"}
 
     # Iterate through the specified caches and send a DELETE request to clear the cache.
     for cache in delete_from:
-        response = request(method="DELETE", url=url, data={"cache": cache}, headers=headers)
+        response = request(
+            method="DELETE", url=url, data={"cache": cache}, headers=headers
+        )
         if response.status_code != 200:
-            result[cache] = response.json()  # Record the JSON response if the request failed
+            result[cache] = (
+                response.json()
+            )  # Record the JSON response if the request failed
         else:
-            result[cache] = response.text  # Record the text response if the request succeeded
+            result[cache] = (
+                response.text
+            )  # Record the text response if the request succeeded
 
     return result
 
@@ -64,21 +68,30 @@ def refresh_book_cache(book_id, update_in=None):
     result = {}
     endpoint = reverse("get-book", kwargs={"book_id": book_id})
     url = f"http://django:8000{endpoint}"
-    headers = {
-        "Authorization": f"Bearer {settings.CELERY_SECRET_KEY}"
-    }
+    headers = {"Authorization": f"Bearer {settings.CELERY_SECRET_KEY}"}
 
     book = Book(book_id=book_id)
-    data = json.dumps(book.fetch_book_data())  # Fetch the latest book data from the Taaghche API
+    data = json.dumps(
+        book.fetch_book_data()
+    )  # Fetch the latest book data from the Taaghche API
 
     if data:
         # Iterate through the specified caches and send a PUT request to update the cache.
         for cache in update_in:
-            response = request(method="PUT", url=url, data={"cache": cache, "data": data}, headers=headers)
+            response = request(
+                method="PUT",
+                url=url,
+                data={"cache": cache, "data": data},
+                headers=headers,
+            )
             if response.status_code != 200:
-                result[cache] = response.json()  # Record the JSON response if the request failed
+                result[cache] = (
+                    response.json()
+                )  # Record the JSON response if the request failed
             else:
-                result[cache] = response.text  # Record the text response if the request succeeded
+                result[cache] = (
+                    response.text
+                )  # Record the text response if the request succeeded
 
         return result
     else:

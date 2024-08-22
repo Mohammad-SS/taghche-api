@@ -31,7 +31,9 @@ class Book:
             dict: The book data if successfully fetched, None otherwise.
         """
         url = f"https://get.taaghche.com/v2/book/{self.book_id}/"
-        response = requests.get(url, headers={'User-Agent': 'TaaghcheApplication/1.0', "accepts": "*/*"})
+        response = requests.get(
+            url, headers={"User-Agent": "TaaghcheApplication/1.0", "accepts": "*/*"}
+        )
 
         if response.status_code == 200:
             data = response.json()

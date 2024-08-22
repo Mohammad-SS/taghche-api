@@ -19,7 +19,7 @@ def publish_message(message, exchange, routing_key, content_type, queue):
     # Retrieve RabbitMQ credentials from environment variables
     rabbitmq_user = os.getenv("RABBITMQ_DEFAULT_USER", "mazimi")
     rabbitmq_pass = os.getenv("RABBITMQ_DEFAULT_PASS", "mazimi")
-    rabbitmq_host = 'rabbitmq'  # Or the Docker container name if running in Docker
+    rabbitmq_host = "rabbitmq"  # Or the Docker container name if running in Docker
     rabbitmq_port = 5672  # The port RabbitMQ is listening on
 
     # Create credentials object
@@ -28,9 +28,7 @@ def publish_message(message, exchange, routing_key, content_type, queue):
     # Establish a connection to RabbitMQ
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host=rabbitmq_host,
-            port=rabbitmq_port,
-            credentials=credentials
+            host=rabbitmq_host, port=rabbitmq_port, credentials=credentials
         )
     )
     channel = connection.channel()
@@ -38,22 +36,17 @@ def publish_message(message, exchange, routing_key, content_type, queue):
     # Declare the exchange with durable=True to match the existing properties
     channel.exchange_declare(
         exchange=exchange,
-        exchange_type='direct',
-        durable=True  # Ensure this matches the existing exchange properties
+        exchange_type="direct",
+        durable=True,  # Ensure this matches the existing exchange properties
     )
 
     # Declare the queue with durable=True to match the existing properties
     channel.queue_declare(
-        queue=queue,
-        durable=True  # Ensure this matches the existing queue properties
+        queue=queue, durable=True  # Ensure this matches the existing queue properties
     )
 
     # Bind the queue to the exchange with the specified routing key
-    channel.queue_bind(
-        exchange=exchange,
-        queue=queue,
-        routing_key=routing_key
-    )
+    channel.queue_bind(exchange=exchange, queue=queue, routing_key=routing_key)
 
     # Convert the message dictionary to a JSON string
     json_message = json.dumps(message)
@@ -63,9 +56,7 @@ def publish_message(message, exchange, routing_key, content_type, queue):
         exchange=exchange,
         routing_key=routing_key,
         body=json_message,
-        properties=pika.BasicProperties(
-            content_type=content_type
-        )
+        properties=pika.BasicProperties(content_type=content_type),
     )
     # Close the connection
     connection.close()
@@ -77,16 +68,13 @@ def delete_cache(book_id, caches=None):
     message = {
         "task": "books.tasks.clear_book_cache",
         "id": str(uuid.uuid4()),
-        "kwargs": {
-            "book_id": book_id,
-            "delete_from": caches
-        },
-        "retries": 0
+        "kwargs": {"book_id": book_id, "delete_from": caches},
+        "retries": 0,
     }
-    exchange = 'books'
-    routing_key = 'books.clear_cache'
-    content_type = 'application/json'
-    queue = 'cache_cleaner'
+    exchange = "books"
+    routing_key = "books.clear_cache"
+    content_type = "application/json"
+    queue = "cache_cleaner"
     publish_message(message, exchange, routing_key, content_type, queue)
 
 
@@ -96,14 +84,11 @@ def refresh_caches(book_id, caches=None):
     message = {
         "task": "books.tasks.refresh_book_cache",
         "id": str(uuid.uuid4()),
-        "kwargs": {
-            "book_id": book_id,
-            "update_in": caches
-        },
-        "retries": 0
+        "kwargs": {"book_id": book_id, "update_in": caches},
+        "retries": 0,
     }
-    exchange = 'books'
-    routing_key = 'books.refresh_cache'
-    content_type = 'application/json'
-    queue = 'cache_cleaner'
+    exchange = "books"
+    routing_key = "books.refresh_cache"
+    content_type = "application/json"
+    queue = "cache_cleaner"
     publish_message(message, exchange, routing_key, content_type, queue)

@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 # Fixtures
 
+
 @pytest.fixture
 def correct_book():
     """
@@ -66,6 +67,7 @@ def wrong_book_url(wrong_book):
 
 
 # Test Cases
+
 
 def test_get_correct_book_view(correct_book, correct_book_url):
     """
