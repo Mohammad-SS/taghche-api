@@ -11,6 +11,8 @@ services:
       - "5000:8000"
     env_file:
       - .env
+    environment:
+      - TZ=Asia/Tehran
     depends_on:
       - redis
       - rabbitmq
@@ -20,8 +22,10 @@ services:
     restart: always
     ports:
       - "6379:6379"
+    environment:
+      - TZ=Asia/Tehran
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,15 +33,16 @@ services:
   rabbitmq:
     image: "rabbitmq:3.11-management-alpine"
     ports:
-      - "5672:5672"    # RabbitMQ broker
-      - "15672:15672"  # RabbitMQ management UI
+      - "5672:5672" # RabbitMQ broker
+      - "15672:15672" # RabbitMQ management UI
     restart: always
     environment:
-      RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
-      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS}"
-      RABBITMQ_DEFAULT_VHOST: "${RABBITMQ_DEFAULT_VHOST}"
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+      - TZ= Asia/Tehran
     healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
+      test: [ "CMD", "rabbitmqctl", "status" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -50,6 +55,8 @@ services:
       - ./django:/app
     env_file:
       - .env
+    environment:
+      - TZ=Asia/Tehran
     depends_on:
       - redis
       - rabbitmq
