@@ -32,7 +32,7 @@ services:
 
   celery:
     build: ./django
-    command: "celery -A config worker --loglevel=info"
+    command: "celery -A config.celery worker --loglevel=info"
     volumes:
       - ./django:/app
     env_file:
