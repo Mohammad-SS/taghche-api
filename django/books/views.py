@@ -46,13 +46,14 @@ class GetBookData(APIView):
     def put(self, request, *args, **kwargs):
         if not self.is_allowed(request):
             return self.NOT_ALLOWED_RESPONSE
-
-        book_id = kwargs.get("book_id", None)
+        request_data = request.data
+        cache = request.data.get("cache", None)
         try:
-            data = json.loads(request.data.get("data", None))
+            data = json.loads(request_data.get("data", None))
         except:
             data = None
 
+        book_id = kwargs.get("book_id", None)
         if not book_id:
             return self.NOT_FOUND_RESPONSE
 
@@ -60,7 +61,7 @@ class GetBookData(APIView):
             return Response({'error': 'data is required field'}, status=status.HTTP_400_BAD_REQUEST)
 
         book = Book(book_id=book_id)
-        result = book.set_cached_data(data)
+        result = book.set_in_cache(cache_name=cache, value=data)
         return Response(data={'success': True, "message": result})
 
     def is_allowed(self, request):
