@@ -2,6 +2,8 @@ import pika
 import os
 import json
 from django.conf import settings
+import uuid
+
 
 def publish_message(message, exchange, routing_key, content_type, queue):
     """
@@ -74,7 +76,7 @@ def delete_cache(book_id, caches=None):
         caches = list(settings.CACHES.keys())
     message = {
         "task": "books.tasks.clear_book_cache",
-        "id": "1",
+        "id": str(uuid.uuid4()),
         "kwargs": {
             "book_id": book_id,
             "delete_from": caches
@@ -87,12 +89,13 @@ def delete_cache(book_id, caches=None):
     queue = 'cache_cleaner'
     publish_message(message, exchange, routing_key, content_type, queue)
 
-def refresh_caches(book_id,caches=None):
+
+def refresh_caches(book_id, caches=None):
     if caches is None:
         caches = list(settings.CACHES.keys())
     message = {
         "task": "books.tasks.refresh_book_cache",
-        "id": "1",
+        "id": str(uuid.uuid4()),
         "kwargs": {
             "book_id": book_id,
             "update_in": caches
