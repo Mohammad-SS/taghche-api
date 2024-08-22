@@ -20,7 +20,13 @@ app.conf.task_routes = {
         'routing_key': 'books.clear_cache',
         'queue': 'cache_cleaner'
     },
+    'books.tasks.refresh_book_cache': {
+        'exchange': 'books',
+        'routing_key': 'books.refresh_cache',
+        'queue': 'cache_cleaner'
+    },
 }
+
 
 app.conf.update(
     task_serializer='json',
