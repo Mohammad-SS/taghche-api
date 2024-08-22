@@ -12,7 +12,6 @@ class GetBookData(APIView):
     def get(self, request, *args, **kwargs):
         book_id = kwargs.get("book_id", None)
         if not book_id:
-            print("No book_id is provided")
             return self.NOT_FOUND_RESPONSE
 
         book = Book(book_id=book_id)
