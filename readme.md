@@ -82,7 +82,7 @@ http://localhost/api/book/<id:integer>
 #### جهت حذف کش ها 
 
 ```text
-message = {
+payload = {
 "task": "books.tasks.clear_book_cache" <REQUIRED>
 "id": str <REQUIRED>
 "kwargs": {
@@ -99,7 +99,7 @@ queue = 'cache_cleaner'
 #### جهت رفرش کش ها 
 
 ```text
-message = {
+payload = {
 "task": "books.tasks.refresh_book_cache" <REQUIRED>
 "id": str <REQUIRED>
 "kwargs": {
