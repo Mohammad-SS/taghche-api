@@ -23,13 +23,16 @@ class Book:
         return None
 
     def get_cached_data(self):
-        # Attempt to get data from the caches
+        missing_cache = []
         for cache_name in self.caches:
             data = self.get_from_cache(cache_name)
             if data:
-                return data
+                for cache in missing_cache:
+                    self.set_in_cache(cache, data)
+                return data, cache_name
+            missing_cache.append(cache_name)
 
-        return None
+        return None, None
 
     def set_cached_data(self, value):
         result = {}
@@ -41,7 +44,6 @@ class Book:
         cache = caches[cache_name]
         data = cache.get(self.book_id)
         if data is not None:
-            print(f"Data found in {cache_name} cache")
             return data
 
         return None
@@ -60,3 +62,11 @@ class Book:
             return f"Deleted data in {cache_name} cache"
         else:
             return f"Cache not found in {cache_name} cache"
+
+    def get_data(self):
+        data, place = self.get_cached_data()
+        if not data:
+            data = self.fetch_book_data()
+            if data:
+                place = "upstream"
+        return data, place
