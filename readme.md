@@ -27,7 +27,7 @@
 
 برای راه‌اندازی این پروژه، مراحل زیر را دنبال کنید:
 
-1. **دریافت ( clone ) کردن Repo **:
+1. **دریافت ( clone ) کردن Repo**:
    ابتدا Repo پروژه را clone کنید:
    ```bash
    git clone git@github.com:Mohammad-SS/taghche-api.git .
