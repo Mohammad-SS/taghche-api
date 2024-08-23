@@ -27,8 +27,8 @@
 
 برای راه‌اندازی این پروژه، مراحل زیر را دنبال کنید:
 
-1. **clone کردن مخزن**:
-   ابتدا مخزن پروژه را clone کنید:
+1. **دریافت ( clone ) کردن Repo **:
+   ابتدا Repo پروژه را clone کنید:
    ```bash
    git clone git@github.com:Mohammad-SS/taghche-api.git .
    ```
@@ -39,7 +39,7 @@
 3. **اجرای Docker Compose**:
    برای ساخت و اجرای سرویس‌ها، از دستور زیر استفاده کنید:
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
 4. **دسترسی به سرویس‌ها**:
